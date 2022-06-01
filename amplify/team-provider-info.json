@@ -12,12 +12,6 @@
       "AmplifyAppId": "d2jfpl96xhxl5m"
     },
     "categories": {
-      "function": {
-        "BuildingContract": {
-          "deploymentBucketName": "amplify-amplifydash-dev-150219-deployment",
-          "s3Key": "amplify-builds/BuildingContract-4b6642663458684c4c5a-build.zip"
-        }
-      },
       "auth": {
         "amplifydasha4a219a2": {}
       }

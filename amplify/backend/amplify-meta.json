@@ -12,33 +12,7 @@
       "AmplifyAppId": "d2jfpl96xhxl5m"
     }
   },
-  "function": {
-    "BuildingContract": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "lastBuildTimeStamp": "2022-03-03T18:21:11.429Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2022-03-03T18:21:11.516Z",
-      "distZipFilename": "BuildingContract-4b6642663458684c4c5a-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-amplifydash-dev-150219-deployment",
-        "s3Key": "amplify-builds/BuildingContract-4b6642663458684c4c5a-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifydash-dev-150219-deployment/amplify-cfn-templates/function/BuildingContract-cloudformation-template.json",
-        "logicalId": "functionBuildingContract"
-      },
-      "lastPushTimeStamp": "2022-04-04T17:45:57.080Z",
-      "output": {
-        "Region": "us-east-2",
-        "Arn": "arn:aws:lambda:us-east-2:635793975357:function:BuildingContract-dev",
-        "Name": "BuildingContract-dev",
-        "LambdaExecutionRole": "amplifydashLambdaRoled15bf99f-dev"
-      },
-      "lastPushDirHash": "9x53D17pxvvYHluFgh8PMDs5Wj4="
-    }
-  },
+  "function": {},
   "api": {},
   "auth": {
     "amplifydasha4a219a2": {

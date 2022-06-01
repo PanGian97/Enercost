@@ -1,11 +1,5 @@
 {
-  "function": {
-    "BuildingContract": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  },
+  "function": {},
   "api": {},
   "auth": {
     "amplifydasha4a219a2": {
