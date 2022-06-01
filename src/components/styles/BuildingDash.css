@@ -1,0 +1,11 @@
+.panel {
+    background-color: #011045;
+    padding: 25px 25px; 
+    border-radius: 4px; 
+  }
+.title{
+  color: white;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+}
