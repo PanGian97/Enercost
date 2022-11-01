@@ -5,9 +5,10 @@ import userOptions from"./userOptions";
 import subscription from "./subscription";
 import buildingInfo from './buildingInfo'
 import sessionData from './sessionData'
+import userInfo from './userInfo'
 import { LOGOUT } from "../actions/types";
 const appReducer = combineReducers({
-  buildings,buildingTSData,userOptions,subscription,buildingInfo,sessionData
+  buildings,buildingTSData,userOptions,subscription,buildingInfo,sessionData,userInfo
 });
 
  const rootReducer = (state,action)=>{

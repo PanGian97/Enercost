@@ -7,11 +7,17 @@ import buildingDataService from "../services/ProfileService";
 
 
 
-export const buildingTSData = (buildingId) => async (dispatch) => {
+export const buildingTSData = (idToken,buildingId,dateOption) => async (dispatch) => {
     try {
       console.log("loading building data from api")
-      const res = await buildingDataService.getBuildingTSData(buildingId);
+      console.log(buildingId)
+      console.log(dateOption)
+      const res = await buildingDataService.getBuildingTSData(idToken,buildingId,dateOption);
       console.log(res)
+      dispatch({
+        type: GET_BUILDING_TS_DATA,
+        payload: res.data.Rows
+      })
     } catch (err) {
       console.log(err);
     }

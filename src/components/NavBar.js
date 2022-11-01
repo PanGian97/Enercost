@@ -1,20 +1,25 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BuildingInfo } from './BuildingInfo'
 import { Buildings } from './Buildings'
 import { useDispatch, useSelector } from "react-redux";
-
+import "bootstrap-icons/font/bootstrap-icons.css";
 import 'bootstrap/dist/css/bootstrap.css'
-import { Nav, Navbar } from 'react-bootstrap'
+import { Nav, Navbar, } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './styles/NavBar.css'
 import logo from './assets/logo.png'
+import { Auth } from 'aws-amplify';
 export const NavBar = () => {
     const userOptions = useSelector(state => state.userOptions)
-    const [selectedBuildingId,setSelectedBuildingId] = useState('')
-    useEffect(()=>{
-     setSelectedBuildingId(userOptions.defaultBuildingId)
-    },[userOptions])
+    const [selectedBuildingId, setSelectedBuildingId] = useState('')
+    useEffect(() => {
+        setSelectedBuildingId(userOptions.defaultBuildingId)
+    }, [userOptions])
+
+    function signUserOut() {
+        Auth.signOut()
+    }
     return (
 
         <Navbar bg="navbackground" variant="dark" expand="lg">
@@ -35,6 +40,7 @@ export const NavBar = () => {
                     </LinkContainer>
                 </Nav>
                 <Nav>
+                  <button className="signout-btn"onClick={()=>signUserOut()}><i className="bi bi-power"></i></button>
                     <LinkContainer to="/userInfo">
                         <Nav.Link>UserInfo</Nav.Link>
                     </LinkContainer>
@@ -49,40 +55,5 @@ export const NavBar = () => {
 
         </Navbar>
 
-
-        // <div className='sum'>   
-        // <div className='logo'>
-        //         Enercost
-        //     </div>        
-        //     <nav className='navbar'>
-        //         <ul>
-        //             <div className='navbar-items-left'>
-        //             <li>
-        //                 <Link to='/'>Home</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/buildings'>BUILDINGS</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/buildingCharts'>CHARTS</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/buildingDashboard'>DASHBAORD</Link>
-        //             </li>
-        //             </div>
-
-        //             <div className='navbar-items-right'>
-        //                 <li>
-        //                     <Link to='/userInfo'>USERINFO</Link>
-        //                 </li>
-        //                 <li>
-        //                     <Link to='/buildingInfo'>BUILDING-INFO</Link>
-        //                 </li>
-
-        //             </div>
-
-        //         </ul>
-        //     </nav>
-        // </div>
     )
 }

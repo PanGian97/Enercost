@@ -51,27 +51,25 @@ export const Buildings = () => {
     return (
 
 
-        <div className="list row">
-            <div className="col-md-6">
+        <div>
                 <h4>buildings List</h4>
-                <ul className="list-group">
-                    {buildings &&
-                        buildings.map((building, index) => (
-                            <li
-                                className={
-                                    "list-group-item " + (index === currentIndex ? "active" : "")
+                 <ul className="list-group">
+                     {buildings &&
+                         buildings.map((building, index) => (
+                             <li
+                                 className={
+                                     "list-group-item " + (index === currentIndex ? "active" : "")
 
-                                }
-                                onClick={() => setActiveBuilding(building, index, true)}
-                                key={index}
-                            >
+                                 }
+                                 onClick={() => setActiveBuilding(building, index, true)}
+                                 key={index}
+                             >
                                 {building.building_name}
                             </li>
-                        ))}
-                </ul>
-
-            </div>
-        </div>
+                         ))}
+                 </ul>
+                 </div>
+       
 
     )
 }

@@ -13,7 +13,7 @@ import './styles/BuildingDash.css'
 
 export const BuildingDash = () => {
 
-  const [costSum, setCostSum] = useState([0, 0, 0])
+  const [costSum, setCostSum] = useState([])
 
 
   const sumcostDonut = {
@@ -26,7 +26,7 @@ export const BuildingDash = () => {
       enabled: true,
       y: {
         formatter: function (val) {
-          return val + ".00" + " €/h"
+          return val + ".0" + " €/h"
         }
       }
     },
@@ -56,7 +56,7 @@ export const BuildingDash = () => {
                   (a, b) => a + b,
                   0
                 );
-                return `${total}€`;
+                return `${total}€/h`;
               }
             },
           },
@@ -231,23 +231,22 @@ export const BuildingDash = () => {
 
   useEffect(() => {
 
-    dispatch(loadSelectedBuildingId())
-
     return () => {
       dispatch(mqttUnsubscribe())
     }
   }, [])
 
   useEffect(() => {
-    console.log(userOptions.defaultBuildingId)
+    console.log(userOptions)
  if(userOptions.defaultBuildingId!=null){//if a building is selected subscribe to this
+  console.log("start subscription")
     dispatch(mqttSubscription(userOptions.defaultBuildingId))
  }   
   }, [userOptions])
 
   useEffect(() => {
     function modifyDash(newValuesArray) {
-     
+   
       let currConsMetrics = {
         water: '0', cng: '0', power: '0'
       }
@@ -273,13 +272,12 @@ export const BuildingDash = () => {
 
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
+    
       modifyDash(subscription)
     }
   }, [subscription])
 
-  useEffect(() => {//just to see how many renders per metrics...
-    console.log('rendered')
-  }, [waterCons, waterCost, powerCons, powerCost, cngCons, cngCost])
+
   useEffect(() => {
 
     let waterMetric = []
@@ -369,23 +367,27 @@ export const BuildingDash = () => {
 
   useEffect(() => {
     if (liveCostMetrics[0].data.length > 0)//check if any vale has been fetched (we chose water value to do the check randomly)
-    {
+     {
       let updCostSumArray = []
+      console.log(liveCostMetrics)
+      
 
       updCostSumArray[0] = liveCostMetrics[0].data[liveCostMetrics[0].data.length - 1][1]//water donut value=last water cost value
       updCostSumArray[1] = liveCostMetrics[1].data[liveCostMetrics[1].data.length - 1][1]//power donut value=last water cost value
       updCostSumArray[2] = liveCostMetrics[2].data[liveCostMetrics[2].data.length - 1][1]//cng donut value=last water cost value
-      console.log(updCostSumArray)
+     //transform to flaot cause calculations need to be done for the average cost consuption measure
+     updCostSumArray[0]  = parseFloat(updCostSumArray[0])
+     updCostSumArray[1]  = parseFloat(updCostSumArray[1])
+     updCostSumArray[2]  = parseFloat(updCostSumArray[2])
+        console.log(updCostSumArray)
       setCostSum(updCostSumArray)
-    }
+      
+     }
 
   }, [liveCostMetrics])
-  useEffect(() => {
-    console.log(costSum)
-  }, [costSum])
-  useEffect(() => {
-    // console.log(livePowerMetrics)
-  }, [livePowerMetrics])
+  
+
+
 
   return (
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-//import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css'
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "./actions/userOptions"
@@ -69,7 +69,7 @@ return (
         <Router>
           <NavBar />
           <Switch>
-            <Route exact path={["/", "/userInfo"]} component={Buildings} />
+            <Route exact path='/' component={UserInfo}></Route>
             <Route path='/buildings' component={Buildings}></Route>
             <Route path='/userInfo' component={UserInfo}></Route>
             <Route path='/buildingInfo' component={BuildingInfo}></Route>
@@ -78,7 +78,7 @@ return (
           </Switch>
         </Router>
 
-        <button onClick={signOut}>Sign out</button>
+       
       </main>
     )}
   </Authenticator>

@@ -1,0 +1,17 @@
+.chart-panel {
+    background-color: black;
+    padding: 25px 25px; 
+    border-radius: 4px; 
+  }
+.title{
+  color: black;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+}
+.btn-livedata{
+  background-color: #06537d !important;  
+}
+.btn-livedata:hover{
+  background-color: #043955 !important;
+}

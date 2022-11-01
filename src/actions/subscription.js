@@ -37,7 +37,7 @@ console.log('i subed')
 }
 
 export const mqttUnsubscribe = () => async (dispatch) => {
-    console.log('callled')
+    console.log('UNSUB callled')
     console.log(pubsub.getProviders())
     subscription.unsubscribe('buildings')
     pubsub.removePluggable('AWSIoTProvider')
