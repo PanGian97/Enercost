@@ -7,6 +7,7 @@ import { userSession } from '../actions/sessionData'
 import { saveSelectedBuildingId, loadSelectedBuildingId } from "../actions/userOptions"
 import { Link } from "react-router-dom";
 import { Auth } from "aws-amplify";
+import ListGroup from 'react-bootstrap/ListGroup';
 
 export const Buildings = () => {
     const [currentIndex, setCurrentIndex] = useState(-1);
@@ -51,24 +52,27 @@ export const Buildings = () => {
     return (
 
 
-        <div>
-                <h4>buildings List</h4>
-                 <ul className="list-group">
+        <div class="list-group list-group-horizontal justify-content-center">
+       
+                
+                 <ul className="list-group ">
+                 <h4>My Buildings</h4>
                      {buildings &&
                          buildings.map((building, index) => (
-                             <li
+                             <a href="#"
                                  className={
-                                     "list-group-item " + (index === currentIndex ? "active" : "")
+                                     "list-group-item list-group-item" + (index === currentIndex ? "-primary" : "")
 
                                  }
                                  onClick={() => setActiveBuilding(building, index, true)}
                                  key={index}
                              >
                                 {building.building_name}
-                            </li>
+                            </a>
                          ))}
                  </ul>
                  </div>
+                
        
 
     )
