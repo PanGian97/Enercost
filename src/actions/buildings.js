@@ -6,7 +6,7 @@ import {
   import buildingDataService from "../services/ProfileService";
   
 export const retrieveBuildings = (authToken) => async (dispatch) => {
-    const savedUserBuildings = JSON.parse(localStorage.getItem('user_buildings'))//get user buildings from localstorage
+    const savedUserBuildings = JSON.parse(localStorage.getItem('user_buildings'))//get user buildings from localstorage (for project simplicity buildings are static for each user)
     if (savedUserBuildings == null) {//if nothing there...
       try {
         const res = await buildingDataService.getAll(authToken);
@@ -30,10 +30,10 @@ export const retrieveBuildings = (authToken) => async (dispatch) => {
   export const getBuildingInfo = (authToken,buildingId)=>async(dispatch)=>{
     try {
       const res = await buildingDataService.getBuildingInfo(authToken,buildingId);
-console.log(res.data.Item)
+
       dispatch({
         type: GET_BUILDING_INFO,
-        payload: res.data.Item,
+        payload: res.data.Item
       });
     } catch (err) {
       console.log(err);
@@ -42,10 +42,10 @@ console.log(res.data.Item)
   export const updateBuildingInfo = (authToken,buildingId,type,value)=>async(dispatch)=>{
     try {
       const res  =await buildingDataService.updateBuildingInfo(authToken,buildingId,type,value);
-      console.log(res)
+      
       dispatch({
         type:UPD_BUILDING_INFO,
-        payload:res
+        payload:res.data.Attributes
       });
     } catch (err) {
       console.log(err);//later will be replaced with dash msg

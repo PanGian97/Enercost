@@ -58,7 +58,7 @@ export const BuildingCharts = () => {
         dispatch(buildingTSData(userOptions.defaultBuildingId))
 
         return () => {
-            console.log("im cleaning up")           
+                      
             //dispatch(mqttUnsubscribe())
         }
     }, [])

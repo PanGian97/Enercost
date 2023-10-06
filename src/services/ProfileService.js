@@ -14,7 +14,16 @@ const getBuildingInfo=(authToken,buildingId)=>{
   return http.get("/user-account/building",{ 'headers': { 'Authorization': authToken,'buildingid': buildingId } })
 }
 const updateBuildingInfo=(authToken,buildingId,multiplierType,multiplierValue)=>{
-  return http.patch("/user-account/building",{'header':{'Authorization':authToken} ,'body':{'buildingid':buildingId,'multipliertype':multiplierType,'multipliervalue':multiplierValue}})
+  //return http.patch("/user-account/building",{'header':{'Authorization':authToken} ,'body':{'buildingid':buildingId,'multipliertype':multiplierType,'multipliervalue':multiplierValue}})
+  return http.patch("/user-account/building", {
+    buildingid: buildingId,
+    multipliertype: multiplierType,
+    multipliervalue: multiplierValue
+  }, {
+    headers: {
+      'Authorization': authToken
+    }
+  })
 }
 const ProfileService = {
   getAll,getBuildingTSData,getBuildingInfo,getUserInfo,updateBuildingInfo

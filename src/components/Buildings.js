@@ -52,7 +52,7 @@ export const Buildings = () => {
     return (
 
 
-        <div class="list-group list-group-horizontal justify-content-center">
+        <div className="list-group list-group-horizontal justify-content-center">
        
                 
                  <ul className="list-group ">

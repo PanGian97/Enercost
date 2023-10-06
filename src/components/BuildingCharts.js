@@ -251,7 +251,7 @@ export const BuildingCharts = () => {
         <div className="container-fluid">
           <div className="row mt-3">
             <div className='title col-md-8'>History consumption & cost charts for the building {userOptions.defaultBuildingId} </div>
-            <div class="btn-group col-md-4">
+            <div className="btn-group col-md-4">
               <button type="button" className="btn btn-primary" onClick={() => setDataPeriod('day')}>Day</button>
               <button type="button" className="btn btn-primary" onClick={() => setDataPeriod('hour')}>Hour</button>
               <button type="button" className="btn btn-primary btn-livedata"  onClick={() => setDataPeriod('minute')}>Minute</button>

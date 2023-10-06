@@ -26,7 +26,7 @@ export const BuildingDash = () => {
       enabled: true,
       y: {
         formatter: function (val) {
-          return val + ".0" + " €/h"
+          return Math.round(val * 10) / 10 + "€/h"
         }
       }
     },
@@ -52,11 +52,11 @@ export const BuildingDash = () => {
               color: '#BCC1C8',
               fontFamily: 'Open Sans',
               formatter: (w) => {
-                const total = w.globals.seriesTotals.reduce(
+                let total = w.globals.seriesTotals.reduce(
                   (a, b) => a + b,
                   0
                 );
-                return `${total}€/h`;
+                return Math.round(total * 10) / 10 + " €/h"
               }
             },
           },
