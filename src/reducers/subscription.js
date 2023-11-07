@@ -1,5 +1,5 @@
 import {
-    MQTT_BUILDING_DATA
+    MQTT_BUILDING_DATA, MQTT_UNSUBSCRIBE
   } from "../actions/types";
   
   let initialState = 
@@ -12,6 +12,8 @@ import {
     switch (type) {
   
       case MQTT_BUILDING_DATA:
+        return payload;
+      case MQTT_UNSUBSCRIBE:
         return payload;
       default:
         return state;

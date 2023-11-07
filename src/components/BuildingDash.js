@@ -113,7 +113,7 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Fundamental Analysis of Stocks',
+      text: 'Water consumption per hour',
       align: 'left'
     },
     subtitle: {
@@ -121,12 +121,19 @@ export const BuildingDash = () => {
       align: 'left'
     },
 
-    xaxis: {
-      formatter: function (value, timestamp) {
-        return new Date(timestamp) // The formatter function overrides format property
+    
+      xaxis: {
+        labels:{
+          datetimeUTC:false,
+          style: {
+            colors: '#008FFB' //replace with your desired color
+          }
+        },
+        type: 'datetime',
+        min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
+        max: new Date().getTime() // Set the maximum datetime to the current time
       },
-      type: 'datetime',
-    },
+  
     yaxis: {
       opposite: true
     },
@@ -147,7 +154,7 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Fundamental Analysis of Power per Hour',
+      text: 'Power consumption per Hour',
       align: 'left'
     },
     subtitle: {
@@ -156,7 +163,15 @@ export const BuildingDash = () => {
     },
 
     xaxis: {
+      labels:{
+        datetimeUTC:false,
+        style: {
+          colors: '#008FFB' //replace with your desired color
+        }
+      },
       type: 'datetime',
+      min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
+      max: new Date().getTime() // Set the maximum datetime to the current time
     },
     yaxis: {
       opposite: true
@@ -178,7 +193,7 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Fundamental Analysis of Cng per Hour',
+      text: 'Cng consumption per hour',
       align: 'left'
     },
     subtitle: {
@@ -187,7 +202,15 @@ export const BuildingDash = () => {
     },
 
     xaxis: {
+      labels:{
+        datetimeUTC:false,
+        style: {
+          colors: '#008FFB' //replace with your desired color
+        }
+      },
       type: 'datetime',
+      min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
+      max: new Date().getTime() // Set the maximum datetime to the current time
     },
     yaxis: {
       opposite: true
@@ -197,14 +220,14 @@ export const BuildingDash = () => {
     }
   })
   const [costOptions, setCostOptions] = useState({
+  
     chart: {
       type: 'area',
       stacked: true,
+      forecolor:'#008FFB'
     },
     colors: ['#008FFB', '#00E396', '#CED4DC'],
-    dataLabels: {
-      enabled: false
-    },
+
     stroke: {
       curve: 'smooth'
     },
@@ -220,8 +243,17 @@ export const BuildingDash = () => {
       horizontalAlign: 'left'
     },
     xaxis: {
-      type: 'datetime'
-    }
+      labels:{
+        datetimeUTC:false,
+        style: {
+          colors: '#008FFB' //replace with your desired color
+        }
+      },
+      type: 'datetime',
+      min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
+      max: new Date().getTime() // Set the maximum datetime to the current time
+    },
+  
   })
 
   const userOptions = useSelector(state => state.userOptions)
@@ -238,22 +270,22 @@ export const BuildingDash = () => {
 
   useEffect(() => {
     console.log(userOptions)
- if(userOptions.defaultBuildingId!=null){//if a building is selected subscribe to this
-  console.log("start subscription")
-    dispatch(mqttSubscription(userOptions.defaultBuildingId))
- }   
+    if (userOptions.defaultBuildingId != null) {//if a building is selected subscribe to this
+      console.log("start subscription")
+      dispatch(mqttSubscription(userOptions.defaultBuildingId))
+    }
   }, [userOptions])
 
   useEffect(() => {
     function modifyDash(newValuesArray) {
-   
+
       let currConsMetrics = {
         water: '0', cng: '0', power: '0'
       }
       let currCostMetrics = {
         water: '0', cng: '0', power: '0'
       }
-
+      console.log(newValuesArray)
       currConsMetrics.power = newValuesArray[0]//not best practice
       currCostMetrics.power = newValuesArray[1]
       currConsMetrics.cng = newValuesArray[2]
@@ -272,7 +304,7 @@ export const BuildingDash = () => {
 
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
-    
+
       modifyDash(subscription)
     }
   }, [subscription])
@@ -300,6 +332,7 @@ export const BuildingDash = () => {
 
     let powerMetric = []
     let updPowerArray = [...livePowerMetrics[0].data]
+    console.log("Updated power array" + updPowerArray)
     const time = new Date()
     powerMetric.push(new Date(time).getTime())
     powerMetric.push(powerCons)
@@ -367,25 +400,25 @@ export const BuildingDash = () => {
 
   useEffect(() => {
     if (liveCostMetrics[0].data.length > 0)//check if any vale has been fetched (we chose water value to do the check randomly)
-     {
+    {
       let updCostSumArray = []
       console.log(liveCostMetrics)
-      
+
 
       updCostSumArray[0] = liveCostMetrics[0].data[liveCostMetrics[0].data.length - 1][1]//water donut value=last water cost value
       updCostSumArray[1] = liveCostMetrics[1].data[liveCostMetrics[1].data.length - 1][1]//power donut value=last water cost value
       updCostSumArray[2] = liveCostMetrics[2].data[liveCostMetrics[2].data.length - 1][1]//cng donut value=last water cost value
-     //transform to flaot cause calculations need to be done for the average cost consuption measure
-     updCostSumArray[0]  = parseFloat(updCostSumArray[0])
-     updCostSumArray[1]  = parseFloat(updCostSumArray[1])
-     updCostSumArray[2]  = parseFloat(updCostSumArray[2])
-        console.log(updCostSumArray)
+      //transform to flaot cause calculations need to be done for the average cost consuption measure
+      updCostSumArray[0] = parseFloat(updCostSumArray[0])
+      updCostSumArray[1] = parseFloat(updCostSumArray[1])
+      updCostSumArray[2] = parseFloat(updCostSumArray[2])
+      console.log(updCostSumArray)
       setCostSum(updCostSumArray)
-      
-     }
+
+    }
 
   }, [liveCostMetrics])
-  
+
 
 
 
@@ -399,14 +432,15 @@ export const BuildingDash = () => {
             <div className="col-md-6">
               <div className="panel mt-md-2">
                 <div id="sumCostChart">
-                  <ReactApexCharts options={sumcostDonut} series={costSum} type="donut" width='100%' />
+                  
+                  <ReactApexCharts options={sumcostDonut} series={costSum} type="donut"/>
                 </div>
               </div>
             </div>
             <div className="col-md-6">
               <div className="panel mt-md-2">
                 <div id="costChart">
-                  <ReactApexCharts options={costOptions} series={liveCostMetrics} type="area" />
+                  <ReactApexCharts options={costOptions} series={liveCostMetrics} type="area" height={500} />
                 </div>
               </div>
             </div>

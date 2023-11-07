@@ -44,12 +44,11 @@ function App() {
 const listener = async(data) => {
   switch (data.payload.event) {
     case 'signIn':
-      console.log("signed")
       const session = await Auth.currentSession()
+      console.log(session)
       dispatch(userSession(session))
       break;
     case 'signOut':
-      console.log("signedOUt")
       dispatch(onLogout())
 
       break;

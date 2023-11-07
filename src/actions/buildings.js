@@ -6,26 +6,26 @@ import {
   import buildingDataService from "../services/ProfileService";
   
 export const retrieveBuildings = (authToken) => async (dispatch) => {
-    const savedUserBuildings = JSON.parse(localStorage.getItem('user_buildings'))//get user buildings from localstorage (for project simplicity buildings are static for each user)
-    if (savedUserBuildings == null) {//if nothing there...
-      try {
+    // const savedUserBuildings = JSON.parse(localStorage.getItem('user_buildings'))//get user buildings from localstorage (for project simplicity buildings are static for each user)
+    // if (savedUserBuildings == null) {//if no building found
+    //   try {
         const res = await buildingDataService.getAll(authToken);
-        localStorage.setItem('user_buildings',JSON.stringify(res.data))//save buildings to localstorage(further filtering needed)
+       // localStorage.setItem('user_buildings',JSON.stringify(res.data))//save buildings to localstorage(further filtering needed)
         dispatch({
           type: RETRIEVE_BUILDINGS,
           payload: res.data,
         });
         console.log(res.data)
-      } catch (err) {
-        console.log(err);
-      }
-    }else{
-      dispatch({
-        type:RETRIEVE_BUILDINGS,//dispatch user buildings from localstorage without a web request
-        payload:savedUserBuildings
-      })
-      console.log("loaded from localstorage")
-    }
+      // } catch (err) {
+      //   console.log(err);
+     // }
+    // }else{
+    //   dispatch({
+    //     type:RETRIEVE_BUILDINGS,//dispatch user buildings from localstorage without a web request
+    //     payload:savedUserBuildings
+    //   })
+    //   console.log("loaded from localstorage")
+    // }
   };
   export const getBuildingInfo = (authToken,buildingId)=>async(dispatch)=>{
     try {

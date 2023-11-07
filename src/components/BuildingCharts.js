@@ -14,6 +14,7 @@ export const BuildingCharts = () => {
   const [dataPeriod, setDataPeriod] = useState('day')
   const [timeseries, setTimeseries] = useState([])
   const [isReadyToFetch, setIsReadyToFetch] = useState(false)
+  const [liveLedColor,setLiveLedColor] = useState("red")
   const valuesChartOptions = ({
     chart: {
       id: "apex-example",
@@ -29,14 +30,17 @@ export const BuildingCharts = () => {
     },
     title: {
       text: 'Average Watt,CNG and water consumption',
-      align: 'left'
+      align: 'left',
+      style: {
+        color: 'white'
+      },
     },
 
     xaxis: {
       categories: timeseries,
       type: 'datetime',
       labels: {
-       
+
         datetimeUTC: false,
         format: ' MMM dd->HH:mm:ss ',
         show: true
@@ -64,14 +68,17 @@ export const BuildingCharts = () => {
     },
     title: {
       text: 'Average Watt,CNG and water cost',
-      align: 'left'
+      align: 'left',
+      style: {
+        color: 'white'
+      },
     },
 
     xaxis: {
       categories: timeseries,
       type: 'datetime',
       labels: {
-       
+
         datetimeUTC: false,
         format: ' MMM dd->HH:mm:ss ',
         show: true
@@ -115,7 +122,7 @@ export const BuildingCharts = () => {
   useEffect(() => {
     if (isReadyToFetch) {
       const idJwtToken = sessionData.idToken.jwtToken
-    
+
       switch (dataPeriod) {//we need subscription to live data only on minute selection
         case 'day':
           dispatch(mqttUnsubscribe())
@@ -141,7 +148,7 @@ export const BuildingCharts = () => {
       if (userOptions.defaultBuildingId != null) {//if a building is selected subscribe toLocalTime this
         setIsReadyToFetch(true)
         dispatch(buildingTSData(idJwtToken, userOptions.defaultBuildingId, 'day'))
-        
+
       }
     } return () => {
       dispatch(mqttUnsubscribe())
@@ -155,24 +162,24 @@ export const BuildingCharts = () => {
       let cngValueArray = []
       let waterValueArray = []
       let wattPriceArray = []
-      let cngPriceArray =[]
-      let waterPriceArray=[]
+      let cngPriceArray = []
+      let waterPriceArray = []
       let timeArray = []
       dataArray.map(measure => {
-        
-     let fullTimeMeasure = measure.Data[4].ScalarValue
-     let shortTimeMeasure = fullTimeMeasure.slice(0, 22)
 
-        let toLocalTime= moment.utc(shortTimeMeasure).local().format('YYYY-MM-DD HH:mm:ss');
+        let fullTimeMeasure = measure.Data[4].ScalarValue
+        let shortTimeMeasure = fullTimeMeasure.slice(0, 22)
+
+        let toLocalTime = moment.utc(shortTimeMeasure).local().format('YYYY-MM-DD HH:mm:ss');
         timeArray.push(toLocalTime)
-         
+
         wattValueArray.push(measure.Data[9].ScalarValue)//the numbers are the coresponding columns from tm table row (unfortunatelly the response doesnt include titles,call them all as Scalar values so it follows the sequence they subscribed in the TM db)
         cngValueArray.push(measure.Data[10].ScalarValue)
         waterValueArray.push(measure.Data[5].ScalarValue)
         wattPriceArray.push(measure.Data[6].ScalarValue)
         cngPriceArray.push(measure.Data[7].ScalarValue)
         waterPriceArray.push(measure.Data[8].ScalarValue)
-        
+
 
       })
       let newValues = produce(values, draftState => {
@@ -185,13 +192,13 @@ export const BuildingCharts = () => {
         draftState[1].data = cngPriceArray
         draftState[2].data = waterPriceArray
       })
-      updateChart(newValues,newPriceValues, timeArray)//passing ready toLocalTime insert toLocalTime setState objects toLocalTime update our chart
+      updateChart(newValues, newPriceValues, timeArray)//passing ready toLocalTime insert toLocalTime setState objects toLocalTime update our chart
     }
 
-    
-      console.log("updating Chart...-> ",buildingMetrics)
-      fillChart(buildingMetrics)
-    
+
+    //console.log("updating Chart...-> ", buildingMetrics)
+    fillChart(buildingMetrics)
+
   }, [buildingMetrics])
 
   useEffect(() => {
@@ -200,9 +207,9 @@ export const BuildingCharts = () => {
       let newWattValuesArray = [...values[0].data]
       let newCngValuesArray = [...values[1].data]
       let newWaterValuesArray = [...values[2].data]
-      let newWattPriceValuesArray =[...priceValues[0].data]
-      let newCngPriceValuesArray =[...priceValues[1].data]
-      let newWaterPriceValuesArray =[...priceValues[2].data]
+      let newWattPriceValuesArray = [...priceValues[0].data]
+      let newCngPriceValuesArray = [...priceValues[1].data]
+      let newWaterPriceValuesArray = [...priceValues[2].data]
       let newTimesArray = [...timeseries]
       newWattValuesArray.shift()
       newCngValuesArray.shift()
@@ -229,17 +236,18 @@ export const BuildingCharts = () => {
         draftState[1].data = newCngPriceValuesArray
         draftState[2].data = newWaterPriceValuesArray
       })
-      updateChart(newValues,newPriceValues, newTimesArray)
+      updateChart(newValues, newPriceValues, newTimesArray)
     }
-
+console.log("inside subscription  useffect")
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
-      console.log("i run", subscription)
       modifyChart(subscription)
+      setLiveLedColor("green")
     }
+    else{setLiveLedColor("red")}
   }, [subscription])
 
-  function updateChart(valuesToUpdate,pricevaluesToUpdate, timesToUpdate) {
+  function updateChart(valuesToUpdate, pricevaluesToUpdate, timesToUpdate) {
 
     setValues(valuesToUpdate)
     setPriceValues(pricevaluesToUpdate)
@@ -252,22 +260,27 @@ export const BuildingCharts = () => {
           <div className="row mt-3">
             <div className='title col-md-8'>History consumption & cost charts for the building {userOptions.defaultBuildingId} </div>
             <div className="btn-group col-md-4">
-              <button type="button" className="btn btn-primary" onClick={() => setDataPeriod('day')}>Day</button>
-              <button type="button" className="btn btn-primary" onClick={() => setDataPeriod('hour')}>Hour</button>
-              <button type="button" className="btn btn-primary btn-livedata"  onClick={() => setDataPeriod('minute')}>Minute</button>
+              <button type="button" className="btn btn-dark" onClick={() => setDataPeriod('day')}>Day</button>
+              <button type="button" className="btn btn-dark" onClick={() => setDataPeriod('hour')}>Hour</button>
+              <button type="button" className="btn btn-dark btn-livedata" onClick={() => setDataPeriod('minute')}>Minute
+                <div className='live-container'>
+                  <span className="live-text">Live</span>
+                  <span className={`led ${liveLedColor}`}></span>
+                </div>
+              </button>
             </div>
           </div>
           <div className="row mt-3">
             <div className="chart-panel col-md-12">
               <div id="historyChartCons">
-                <ReactApexCharts options={valuesChartOptions} series={values} type="area" height='300%' />
+                <ReactApexCharts options={valuesChartOptions} series={values} type="area" height='280%' />
               </div>
             </div>
           </div>
           <div className="row mt-3">
             <div className="chart-panel col-md-12">
               <div id="historyChartCons">
-                <ReactApexCharts options={pricesChartOptions} series={priceValues} type="area" height='260%' />
+                <ReactApexCharts options={pricesChartOptions} series={priceValues} type="area" height='280%' />
               </div>
             </div>
           </div>

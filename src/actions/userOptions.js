@@ -6,6 +6,7 @@ import {
 export const saveSelectedBuildingId = (newSelBuildingId) => async (dispatch)=>{
    
     localStorage.setItem('selected_building',JSON.stringify(newSelBuildingId))
+    console.log(localStorage.getItem('selected_building'))
     dispatch({
       type:SAVE_BUILDING_SELECTION,
       payload: newSelBuildingId
@@ -14,9 +15,11 @@ export const saveSelectedBuildingId = (newSelBuildingId) => async (dispatch)=>{
 
   export const loadSelectedBuildingId = () => async (dispatch)=>{
  //if building selection exists in local storage,use it, otherwise set to empty array
+
     let selBuildingId = localStorage.getItem('selected_building')
     ?JSON.parse(localStorage.getItem('selected_building'))
     :"";
+    console.log("load selected building"+selBuildingId)
     dispatch({
       type:LOAD_BUILDING_SELECTION,
       payload: selBuildingId
