@@ -129,9 +129,7 @@ export const BuildingDash = () => {
             colors: '#008FFB' //replace with your desired color
           }
         },
-        type: 'datetime',
-        min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
-        max: new Date().getTime() // Set the maximum datetime to the current time
+        type: 'datetime'
       },
   
     yaxis: {
@@ -169,9 +167,7 @@ export const BuildingDash = () => {
           colors: '#008FFB' //replace with your desired color
         }
       },
-      type: 'datetime',
-      min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
-      max: new Date().getTime() // Set the maximum datetime to the current time
+      type: 'datetime'
     },
     yaxis: {
       opposite: true
@@ -193,7 +189,7 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Cng consumption per hour',
+      text: 'Cng consumption',
       align: 'left'
     },
     subtitle: {
@@ -208,9 +204,7 @@ export const BuildingDash = () => {
           colors: '#008FFB' //replace with your desired color
         }
       },
-      type: 'datetime',
-      min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
-      max: new Date().getTime() // Set the maximum datetime to the current time
+      type: 'datetime'
     },
     yaxis: {
       opposite: true
@@ -249,9 +243,7 @@ export const BuildingDash = () => {
           colors: '#008FFB' //replace with your desired color
         }
       },
-      type: 'datetime',
-      min: new Date().getTime() - 3600000, // Set the minimum datetime to one hour ago
-      max: new Date().getTime() // Set the maximum datetime to the current time
+      type: 'datetime'
     },
   
   })

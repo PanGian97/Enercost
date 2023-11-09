@@ -17,19 +17,15 @@ export const mqttSubscription = (selectedBuildingTopic) => async (dispatch) => {
 
     subscription = pubsub.subscribe('buildings/B-1').subscribe({//Attention! The function that will be called it uses the old values and not the ones seted after this function called
         next: data => {
-            let energyDataArray=[]
-            console.log(data.value)//it outputs the old state values when the function run 
-            energyDataArray.push(data.value['watt_value'].toString())
-            energyDataArray.push(data.value['watt_price_value'].toString())
-            energyDataArray.push(data.value['cng_value'].toString())
-            energyDataArray.push(data.value['cng_price_value'].toString())
-            energyDataArray.push(data.value['water_value'].toString())
-            energyDataArray.push(data.value['water_price_value'].toString())
+           let incomingData = data.value
+           incomingData.timestamp = new Date().toISOString();;
+           
      
             dispatch({
                 type: MQTT_BUILDING_DATA,
-                payload: energyDataArray
+                payload: incomingData
             })
+           
         },
         error: error => console.error(error),
         complete: () => console.log('Done'),

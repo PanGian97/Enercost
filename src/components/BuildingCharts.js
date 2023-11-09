@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadSelectedBuildingId } from "../actions/userOptions"
 import ReactApexCharts from 'react-apexcharts'
 import produce from "immer"
-import { buildingTSData, cleanProfileStateArray } from '../actions/buildingTSData';
+import { buildingTSData, cleanProfileStateArray, updateChartData } from '../actions/buildingTSData';
 import { mqttSubscription, mqttUnsubscribe } from '../actions/subscription';
 import './styles/BuildingCharts.css'
 import moment from 'moment'
@@ -14,7 +14,7 @@ export const BuildingCharts = () => {
   const [dataPeriod, setDataPeriod] = useState('day')
   const [timeseries, setTimeseries] = useState([])
   const [isReadyToFetch, setIsReadyToFetch] = useState(false)
-  const [liveLedColor,setLiveLedColor] = useState("red")
+  const [liveLedColor, setLiveLedColor] = useState("red")
   const valuesChartOptions = ({
     chart: {
       id: "apex-example",
@@ -113,7 +113,8 @@ export const BuildingCharts = () => {
     data: []
   }])
 
-  const buildingMetrics = useSelector(state => state.buildingTSData);
+  const buildingMetrics = useSelector(state => state.buildingTSData)
+  const buildingUpdatedMetrics = useSelector(state => state.updateChartData)
   const userOptions = useSelector(state => state.userOptions)
   const subscription = useSelector(state => state.subscription)
   const sessionData = useSelector(state => state.sessionData)
@@ -147,7 +148,7 @@ export const BuildingCharts = () => {
       const idJwtToken = sessionData.idToken.jwtToken
       if (userOptions.defaultBuildingId != null) {//if a building is selected subscribe toLocalTime this
         setIsReadyToFetch(true)
-        dispatch(buildingTSData(idJwtToken, userOptions.defaultBuildingId, 'day'))
+        dispatch(buildingTSData(idJwtToken, userOptions.defaultBuildingId, dataPeriod))
 
       }
     } return () => {
@@ -165,94 +166,67 @@ export const BuildingCharts = () => {
       let cngPriceArray = []
       let waterPriceArray = []
       let timeArray = []
-      dataArray.map(measure => {
-
-        let fullTimeMeasure = measure.Data[4].ScalarValue
-        let shortTimeMeasure = fullTimeMeasure.slice(0, 22)
-
-        let toLocalTime = moment.utc(shortTimeMeasure).local().format('YYYY-MM-DD HH:mm:ss');
-        timeArray.push(toLocalTime)
-
-        wattValueArray.push(measure.Data[9].ScalarValue)//the numbers are the coresponding columns from tm table row (unfortunatelly the response doesnt include titles,call them all as Scalar values so it follows the sequence they subscribed in the TM db)
-        cngValueArray.push(measure.Data[10].ScalarValue)
-        waterValueArray.push(measure.Data[5].ScalarValue)
-        wattPriceArray.push(measure.Data[6].ScalarValue)
-        cngPriceArray.push(measure.Data[7].ScalarValue)
-        waterPriceArray.push(measure.Data[8].ScalarValue)
 
 
-      })
-      let newValues = produce(values, draftState => {
-        draftState[0].data = wattValueArray
-        draftState[1].data = cngValueArray
-        draftState[2].data = waterValueArray
-      })
-      let newPriceValues = produce(priceValues, draftState => {
-        draftState[0].data = wattPriceArray
-        draftState[1].data = cngPriceArray
-        draftState[2].data = waterPriceArray
-      })
-      updateChart(newValues, newPriceValues, timeArray)//passing ready toLocalTime insert toLocalTime setState objects toLocalTime update our chart
+      dataArray.forEach(item => {
+        wattValueArray.push(item.watt_value);
+        cngValueArray.push(item.cng_value);
+        waterValueArray.push(item.water_value);
+        wattPriceArray.push(item.watt_price_value);
+        cngPriceArray.push(item.cng_price_value);
+        waterPriceArray.push(item.water_price_value);
+        timeArray.push(item.timestamp);
+      });
+      let newValues = []
+      newValues[0] = wattValueArray
+      newValues[1] = cngValueArray
+      newValues[2] = waterValueArray
+
+      let newPriceValues = []
+      newPriceValues[0] = wattPriceArray
+      newPriceValues[1] = cngPriceArray
+      newPriceValues[2] = waterPriceArray
+
+      // Update 'values' state
+      setValues([
+        { name: 'wattage readings', data: wattValueArray },
+        { name: 'cng readings', data: cngValueArray },
+        { name: 'water readings', data: waterValueArray },
+      ]);
+
+      // Update 'priceValues' state
+      setPriceValues([
+        { name: 'wattage consumption readings', data: wattPriceArray },
+        { name: 'cng consumption readings', data: cngPriceArray },
+        { name: 'water consumption readings', data: waterPriceArray },
+      ]);
+      setTimeseries(timeArray)
     }
 
 
-    //console.log("updating Chart...-> ", buildingMetrics)
     fillChart(buildingMetrics)
-
+    console.log(buildingMetrics)
   }, [buildingMetrics])
-
   useEffect(() => {
-    function modifyChart(subDataArray) {
-      let currTime = new Date().toISOString().replace("T", " ").substring(0, 19);
-      let newWattValuesArray = [...values[0].data]
-      let newCngValuesArray = [...values[1].data]
-      let newWaterValuesArray = [...values[2].data]
-      let newWattPriceValuesArray = [...priceValues[0].data]
-      let newCngPriceValuesArray = [...priceValues[1].data]
-      let newWaterPriceValuesArray = [...priceValues[2].data]
-      let newTimesArray = [...timeseries]
-      newWattValuesArray.shift()
-      newCngValuesArray.shift()
-      newWaterValuesArray.shift()
-      newWattPriceValuesArray.shift()
-      newCngPriceValuesArray.shift()
-      newWaterPriceValuesArray.shift()
-      newTimesArray.shift()
-      newWattValuesArray.push(subDataArray[0])
-      newCngValuesArray.push(subDataArray[2])
-      newWaterValuesArray.push(subDataArray[4])
-      newWattPriceValuesArray.push(subDataArray[1])
-      newCngPriceValuesArray.push(subDataArray[3])
-      newWaterPriceValuesArray.push(subDataArray[5])
-      newTimesArray.push(currTime)
+    console.log(priceValues)
+   
+  }, [priceValues])
+  useEffect(() => {
+    function modifyDataArray(subDataArray) {
+      console.log(subDataArray)
 
-      let newValues = produce(values, draftState => {
-        draftState[0].data = newWattValuesArray
-        draftState[1].data = newCngValuesArray
-        draftState[2].data = newWaterValuesArray
-      })
-      let newPriceValues = produce(priceValues, draftState => {
-        draftState[0].data = newWattPriceValuesArray
-        draftState[1].data = newCngPriceValuesArray
-        draftState[2].data = newWaterPriceValuesArray
-      })
-      updateChart(newValues, newPriceValues, newTimesArray)
+
     }
-console.log("inside subscription  useffect")
+    console.log("inside subscription  useffect")
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
-      modifyChart(subscription)
+      modifyDataArray(subscription)
       setLiveLedColor("green")
     }
-    else{setLiveLedColor("red")}
+    else { setLiveLedColor("red") }
   }, [subscription])
 
-  function updateChart(valuesToUpdate, pricevaluesToUpdate, timesToUpdate) {
 
-    setValues(valuesToUpdate)
-    setPriceValues(pricevaluesToUpdate)
-    setTimeseries(timesToUpdate)
-  }
   return (
     <div id="wrapper">
       <div className="content-area">
