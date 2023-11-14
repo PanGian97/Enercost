@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css'
+import {components,formFields} from './components/AuthComponents.js'
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "./actions/userOptions"
 import { userSession } from "./actions/sessionData"
-import { Authenticator } from '@aws-amplify/ui-react';
+import {  Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Hub, Logger } from 'aws-amplify';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -38,7 +39,7 @@ function App() {
   },[])
   
 
-
+  
 
 
 const listener = async(data) => {
@@ -62,7 +63,7 @@ Hub.listen('auth', listener);
 
 
 return (
-  <Authenticator loginMechanisms={['email']}>
+  <Authenticator hideSignUp formFields={formFields} components={components} loginMechanisms={['email']}>
     {({ signOut, user }) => (
       <main>
         <Router>
