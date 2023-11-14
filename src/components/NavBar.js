@@ -24,7 +24,7 @@ export const NavBar = () => {
 
         <Navbar bg="navbackground" variant="dark" expand="lg">
             <Navbar.Brand>
-                <img src={logo} />{' '}Enercost
+                <img src={logo} style={{ width: '6vw', height: 'auto', backgroundColor: 'white' }}/>
             </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse>

@@ -14,8 +14,10 @@ export const components = {
   
       return (
         <View textAlign="center" padding={tokens.space.large}>
-          
-          <h1>ENERCOST</h1>
+          <Image
+            alt="Enercost Logo"
+            src={logo}
+          />
         </View>
       );
     },
