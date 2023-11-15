@@ -5,7 +5,7 @@ import { Buildings } from './Buildings'
 import { useDispatch, useSelector } from "react-redux";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'bootstrap/dist/css/bootstrap.css'
-import { Nav, Navbar, } from 'react-bootstrap'
+import { Nav, Navbar, Col } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './styles/NavBar.css'
 import logo from './assets/logo.png'
@@ -22,38 +22,35 @@ export const NavBar = () => {
     }
     return (
 
-        <Navbar bg="navbackground" variant="dark" expand="lg">
-            <Navbar.Brand>
-                <img src={logo} style={{ width: '6vw', height: 'auto', backgroundColor: 'white' }}/>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-            <Navbar.Collapse>
-                <Nav className='me-auto'>
-                    <LinkContainer to="/buildings">
-                        <Nav.Link>Buildings</Nav.Link>
-                    </LinkContainer>
-                    <LinkContainer to="/buildingCharts">
-                        <Nav.Link>Charts</Nav.Link>
-                    </LinkContainer>
-                    <LinkContainer to="/buildingDashboard">
-                        <Nav.Link>Dashbaord</Nav.Link>
-                    </LinkContainer>
-                </Nav>
-                <Nav>
-                  <button className="signout-btn"onClick={()=>signUserOut()}><i className="bi bi-power"></i></button>
-                    <LinkContainer to="/userInfo">
-                        <Nav.Link>UserInfo</Nav.Link>
-                    </LinkContainer>
-                    <LinkContainer to="/buildingInfo">
-                        <Nav.Link>Building {selectedBuildingId} Info</Nav.Link>
-                    </LinkContainer>
-                </Nav>
-            </Navbar.Collapse>
-
-
-
-
-        </Navbar>
+        <Navbar bg="navbackground" variant="dark" expand="lg" className="position-relative">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav" className="order-1">
+            <Nav className="me-auto">
+                <LinkContainer to="/buildings">
+                    <Nav.Link>Buildings</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/buildingCharts">
+                    <Nav.Link>Charts</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/buildingDashboard">
+                    <Nav.Link>Dashboard</Nav.Link>
+                </LinkContainer>
+            </Nav>
+            <Nav className="ms-auto">
+                <button className="signout-btn" onClick={() => signUserOut()}><i className="bi bi-power"></i></button>
+                <LinkContainer to="/userInfo">
+                    <Nav.Link>UserInfo</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/buildingInfo">
+                    <Nav.Link>Building {selectedBuildingId} Info</Nav.Link>
+                </LinkContainer>
+            </Nav>
+        </Navbar.Collapse>
+        <Navbar.Brand className="mx-auto" style={{ position: 'relative', left: '50%', transform: 'translateX(-100%)' }}>
+            <img src={logo} style={{ width: 'auto', height: 'auto', backgroundColor: 'white', maxWidth: '100px' }} />
+        </Navbar.Brand>
+    </Navbar>
+    
 
     )
 }
