@@ -16,6 +16,7 @@ import { BuildingDash } from './components/BuildingDash'
 import { BuildingCharts } from './components/BuildingCharts'
 import { NavBar } from './components/NavBar';
 import { Auth } from 'aws-amplify';
+
 function App() {
   const dispatch = useDispatch()
   const sessionData = useSelector(state => state.sessionData)

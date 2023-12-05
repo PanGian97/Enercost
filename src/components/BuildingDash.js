@@ -16,10 +16,10 @@ export const BuildingDash = () => {
   const [costSum, setCostSum] = useState([])
 
 
-  const sumcostDonut = {
+  const sumCostDonut = {
     chart: {
       type: "donut",
-
+      height: '60%'
     },
     colors: ["#1ab7ea", "#0084ff", "#39539E", "#0077B5"],
     tooltip: {
@@ -113,8 +113,13 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Water consumption per hour',
-      align: 'left'
+      text: 'Water consumption during the last hour',
+      align: 'left',
+      style: {
+        fontSize:  '14px',
+        fontWeight:  'bold',
+        color:  '#FFFFFF'
+      },
     },
     subtitle: {
       text: 'Price Movements',
@@ -152,8 +157,14 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Power consumption per Hour',
-      align: 'left'
+      text: 'Power consumption during the last hour',
+      align: 'left',
+      style: {
+        fontSize:  '14px',
+        fontWeight:  'bold',
+        color:  '#FFFFFF'
+      },
+    
     },
     subtitle: {
       text: 'Price Movements',
@@ -189,8 +200,14 @@ export const BuildingDash = () => {
     },
 
     title: {
-      text: 'Cng consumption',
-      align: 'left'
+      text: 'Cng consumption during the last hour',
+      align: 'left',
+      style: {
+        fontSize:  '14px',
+        fontWeight:  'bold',
+        color:  '#FFFFFF'
+      },
+    
     },
     subtitle: {
       text: 'Live Movements',
@@ -219,6 +236,16 @@ export const BuildingDash = () => {
       type: 'area',
       stacked: true,
       forecolor:'#008FFB'
+    },
+    title: {
+      text: 'Total energy cost during the last hour',
+      align: 'left',
+      style: {
+        fontSize:  '14px',
+        fontWeight:  'bold',
+        color:  '#FFFFFF'
+      },
+    
     },
     colors: ['#008FFB', '#00E396', '#CED4DC'],
 
@@ -262,7 +289,7 @@ export const BuildingDash = () => {
 
   useEffect(() => {
     console.log(userOptions)
-    if (userOptions.defaultBuildingId != null) {//if a building is selected subscribe to this
+    if (userOptions.defaultBuildingId != "") {//if a building is selected subscribe to this
       console.log("start subscription")
       dispatch(mqttSubscription(userOptions.defaultBuildingId))
     }
@@ -296,8 +323,8 @@ export const BuildingDash = () => {
 
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
-
-      modifyDash(subscription)
+console.log(subscription)
+      //modifyDash(subscription)
     }
   }, [subscription])
 
@@ -419,20 +446,20 @@ export const BuildingDash = () => {
     <div id="wrapper">
       <div className="content-area">
         <div className="container-fluid">
-          <div className='title'>Real time cost and consumption for the building {userOptions.defaultBuildingId} </div>
+         
           <div className="row">
             <div className="col-md-6">
               <div className="panel mt-md-2">
                 <div id="sumCostChart">
                   
-                  <ReactApexCharts options={sumcostDonut} series={costSum} type="donut"/>
+                  <ReactApexCharts options={sumCostDonut} series={costSum} type="donut"/>
                 </div>
               </div>
             </div>
             <div className="col-md-6">
               <div className="panel mt-md-2">
                 <div id="costChart">
-                  <ReactApexCharts options={costOptions} series={liveCostMetrics} type="area" height={500} />
+                  <ReactApexCharts options={costOptions} series={liveCostMetrics} type="area" />
                 </div>
               </div>
             </div>

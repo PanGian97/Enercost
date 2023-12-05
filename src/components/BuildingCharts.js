@@ -217,7 +217,6 @@ export const BuildingCharts = () => {
 
 
     }
-    console.log("inside subscription  useffect")
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
       modifyDataArray(subscription)

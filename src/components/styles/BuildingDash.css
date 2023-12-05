@@ -1,11 +1,19 @@
 .panel {
-    background-color: #080c0e;
-    padding: 25px 25px; 
-    border-radius: 4px; 
-  }
-.title{
-  color: white;
+  background-color: black;
+  padding: 25px 25px;
+  border-radius: 4px;
+  
+  
+
+}
+
+.title {
+  color: white !important;
   font-size: large;
   font-weight: bold;
   text-align: center;
 }
+
+
+
+

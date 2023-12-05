@@ -8,6 +8,10 @@ import { PubSubClass } from "@aws-amplify/pubsub/lib-esm/PubSub";
 
 const pubsub = new PubSubClass({})
 let subscription;
+const options = {
+    timeZone: 'Europe/Athens', // GMT+2 (Athens)
+  };
+  
 
 export const mqttSubscription = (selectedBuildingTopic) => async (dispatch) => {
     pubsub.addPluggable(new AWSIoTProvider({
@@ -18,8 +22,8 @@ export const mqttSubscription = (selectedBuildingTopic) => async (dispatch) => {
     subscription = pubsub.subscribe('buildings/B-1').subscribe({//Attention! The function that will be called it uses the old values and not the ones seted after this function called
         next: data => {
            let incomingData = data.value
-           incomingData.timestamp = new Date().toISOString();;
-           
+           incomingData.timestamp = new Date().toLocaleString('en-US', options);
+           console.log(incomingData)
      
             dispatch({
                 type: MQTT_BUILDING_DATA,
@@ -33,7 +37,6 @@ export const mqttSubscription = (selectedBuildingTopic) => async (dispatch) => {
 }
 
 export const mqttUnsubscribe = () => async (dispatch) => {
-    console.log('UNSUB callled')
     console.log(pubsub.getProviders())
     subscription.unsubscribe('buildings')
     pubsub.removePluggable('AWSIoTProvider')
