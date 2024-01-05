@@ -1,5 +1,5 @@
 import {
-  RETRIEVE_BUILDING_TS_DATA, GET_BUILDING_TS_DATA, CLEAN_ARRAY_DATA, UPDATE_BUILDING_CHART_DATA
+ GET_BUILDING_TS_DATA, CLEAN_ARRAY_DATA, 
 } from "./types";
 
 import buildingDataService from "../services/ProfileService";
@@ -52,9 +52,4 @@ export const cleanProfileStateArray = () => async (dispatch) => {
   });
 };
 
-export const updateChartData = (incomingSensorData) => async (dispatch) => {
-  dispatch({
-    type: UPDATE_BUILDING_CHART_DATA,
-    payload: incomingSensorData
-  });
-}
+

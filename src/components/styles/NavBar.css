@@ -25,13 +25,7 @@
   padding-bottom:0;
 }
 
-.navbar-brand {
-  width: '100%';
-  background-color: white;
-  padding: 0;
-  height: '100%';
-  display: flex;
-}
+
 
 .navbar-brand img {
   height: 70px;
@@ -41,7 +35,7 @@
 }
 .nav-link{
   color: white !important;
-  font-size:20px !important;
+  font-size:16px !important;
 }
 .nav-link:hover {
   background-color: black;

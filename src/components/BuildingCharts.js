@@ -113,8 +113,7 @@ export const BuildingCharts = () => {
     data: []
   }])
 
-  const buildingMetrics = useSelector(state => state.buildingTSData)
-  const buildingUpdatedMetrics = useSelector(state => state.updateChartData)
+  const buildingMetrics = useSelector(state => state.buildingData)
   const userOptions = useSelector(state => state.userOptions)
   const subscription = useSelector(state => state.subscription)
   const sessionData = useSelector(state => state.sessionData)
@@ -175,7 +174,18 @@ export const BuildingCharts = () => {
         wattPriceArray.push(item.watt_price_value);
         cngPriceArray.push(item.cng_price_value);
         waterPriceArray.push(item.water_price_value);
-        timeArray.push(item.timestamp);
+        if (item.timestamp === undefined) {
+
+          const currentLocalTime = new Date().getTime();
+          console.log(currentLocalTime)
+          timeArray.push(currentLocalTime);
+        } else {
+
+          const dateObj = new Date(item.timestamp);
+          const localTime = dateObj.getTime() - (dateObj.getTimezoneOffset() * 60 * 1000);
+          console.log(localTime)
+          timeArray.push(localTime)
+        }
       });
       let newValues = []
       newValues[0] = wattValueArray
@@ -203,23 +213,14 @@ export const BuildingCharts = () => {
       setTimeseries(timeArray)
     }
 
-
     fillChart(buildingMetrics)
     console.log(buildingMetrics)
   }, [buildingMetrics])
-  useEffect(() => {
-    console.log(priceValues)
-   
-  }, [priceValues])
-  useEffect(() => {
-    function modifyDataArray(subDataArray) {
-      console.log(subDataArray)
 
+  useEffect(() => {
 
-    }
     if (Object.keys(subscription).length !== 0)//so it will not run on init 
     {
-      modifyDataArray(subscription)
       setLiveLedColor("green")
     }
     else { setLiveLedColor("red") }

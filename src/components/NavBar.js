@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import { Nav, Navbar, Col } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './styles/NavBar.css'
-import logo from './assets/logo.png'
+import logo from './assets/logo-white.png'
 import { Auth } from 'aws-amplify';
 export const NavBar = () => {
     const userOptions = useSelector(state => state.userOptions)
@@ -22,9 +22,9 @@ export const NavBar = () => {
     }
     return (
 
-        <Navbar bg="navbackground" variant="dark" expand="lg">
+        <Navbar bg="navbackground" variant="dark">
             <Navbar.Brand>
-                <img src={logo} />
+                <img src={logo} className="logo"/>
             </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse>

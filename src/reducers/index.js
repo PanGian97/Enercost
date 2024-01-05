@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import buildingTSData from "./buildingTSData";
+import buildingData from "./buildingData";
 import buildings from "./buildings";
 import userOptions from"./userOptions";
 import subscription from "./subscription";
@@ -8,7 +8,7 @@ import sessionData from './sessionData'
 import userInfo from './userInfo'
 import { LOGOUT } from "../actions/types";
 const appReducer = combineReducers({
-  buildings,buildingTSData,userOptions,subscription,buildingInfo,sessionData,userInfo
+  buildings,buildingData,userOptions,subscription,buildingInfo,sessionData,userInfo
 });
 
  const rootReducer = (state,action)=>{
