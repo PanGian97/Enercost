@@ -20,7 +20,7 @@ export const mqttSubscription = (selectedBuildingTopic) => async (dispatch) => {
     subscription = pubsub.subscribe('buildings/B-1').subscribe({//Attention! The function that will be called it uses the old values and not the ones seted after this function called
         next: data => {
            let incomingData = data.value
-           console.log(incomingData)
+           //console.log(incomingData)
      
             dispatch({
                 type: MQTT_BUILDING_DATA,
@@ -34,7 +34,7 @@ export const mqttSubscription = (selectedBuildingTopic) => async (dispatch) => {
 }
 
 export const mqttUnsubscribe = () => async (dispatch) => {
-    console.log(pubsub.getProviders())
+   // console.log(pubsub.getProviders())
     subscription.unsubscribe('buildings')
     pubsub.removePluggable('AWSIoTProvider')
     dispatch({

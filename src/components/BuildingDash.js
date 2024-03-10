@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { AWSIoTProvider } from '@aws-amplify/pubsub';
-import { Amplify, PubSub } from 'aws-amplify'
-import { Auth } from 'aws-amplify'
 import { useDispatch, useSelector } from "react-redux";
-import { loadSelectedBuildingId } from "../actions/userOptions"
 import ReactApexCharts from 'react-apexcharts'
-import produce from "immer"
-import { unstable_batchedUpdates } from 'react-dom'//to skip multiple re-renders during setstates
 import { buildingTSData, cleanProfileStateArray } from '../actions/buildingTSData';
 import { mqttSubscription, mqttUnsubscribe } from '../actions/subscription';
 import './styles/BuildingDash.css'
@@ -15,6 +9,15 @@ export const BuildingDash = () => {
 
   const [costSum, setCostSum] = useState([])
 
+  const [waterConsCurr, setWaterConsCurr] = useState(0)
+  const [powerConsCurr, setPowerConsCurr] = useState(0)
+  const [cngConsCurr, setCngConsCurr] = useState(0)
+
+  const [waterCostCurr, setWaterCostCurr] = useState(0)
+  const [powerCostCurr, setPowerCostCurr] = useState(0)
+  const [cngCostCurr, setCngCostCurr] = useState(0)
+
+  const buildingMetrics = useSelector(state => state.buildingData)
 
   const sumCostDonut = {
     chart: {
@@ -64,14 +67,7 @@ export const BuildingDash = () => {
       }
     }
   };
-  const [waterCons, setWaterCons] = useState(0)
-  const [powerCons, setPowerCons] = useState(0)
-  const [cngCons, setCngCons] = useState(0)
-
-  const [waterCost, setWaterCost] = useState(0)
-  const [powerCost, setPowerCost] = useState(0)
-  const [cngCost, setCngCost] = useState(0)
-
+  //----------------
   const [liveWaterMetrics, setLiveWaterMetrics] = useState([{
     name: "water consumption",
     data: []//many data arrays will be saved there holding the time and value e.g-> [164783294,20]
@@ -107,43 +103,52 @@ export const BuildingDash = () => {
         enabled: false
       }
     },
-
     stroke: {
       curve: 'straight'
     },
-
     title: {
       text: 'Water consumption during the last hour',
       align: 'left',
       style: {
-        fontSize:  '14px',
-        fontWeight:  'bold',
-        color:  '#FFFFFF'
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#FFFFFF'
       },
     },
     subtitle: {
       text: 'Price Movements',
       align: 'left'
     },
-
-    
-      xaxis: {
-        labels:{
-          datetimeUTC:false,
-          style: {
-            colors: '#008FFB' //replace with your desired color
-          }
-        },
-        type: 'datetime'
+    xaxis: {
+      labels: {
+        datetimeUTC: false,
+        style: {
+          colors: '#008FFB' //replace with your desired color
+        }
       },
-  
+      type: 'datetime',
+      tooltip: {
+        enabled: true,
+        formatter: function(value) {
+          // Use this formatter function to format the tooltip value
+          const date = new Date(value);
+          return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+        }
+      },
+    },
     yaxis: {
       opposite: true
+    },
+    tooltip: {
+      x: {
+        format: 'HH:mm' // You might think this is enough, but custom formatter as shown above in xaxis.tooltip is necessary for specific custom formats
+      }
     },
     legend: {
       horizontalAlign: 'left'
     }
-  })
+  });
+  
   const [powerOptions, setPowerOptions] = useState({
     chart: {
       type: 'area',
@@ -160,28 +165,42 @@ export const BuildingDash = () => {
       text: 'Power consumption during the last hour',
       align: 'left',
       style: {
-        fontSize:  '14px',
-        fontWeight:  'bold',
-        color:  '#FFFFFF'
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#FFFFFF'
       },
-    
+
     },
     subtitle: {
-      text: 'Price Movements',
+      text: 'Consumption Movements',
       align: 'left'
     },
 
     xaxis: {
-      labels:{
-        datetimeUTC:false,
+      labels: {
+        datetimeUTC: false,
         style: {
           colors: '#008FFB' //replace with your desired color
         }
       },
-      type: 'datetime'
+      type: 'datetime',
+      tooltip: {
+        enabled: true,
+        formatter: function(value) {
+          // Use this formatter function to format the tooltip value
+          const date = new Date(value);
+          return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+        }
+      },
     },
+    
     yaxis: {
       opposite: true
+    },
+    tooltip: {
+      x: {
+        format: 'HH:mm' // You might think this is enough, but custom formatter as shown above in xaxis.tooltip is necessary for specific custom formats
+      }
     },
     legend: {
       horizontalAlign: 'left'
@@ -203,49 +222,62 @@ export const BuildingDash = () => {
       text: 'Cng consumption during the last hour',
       align: 'left',
       style: {
-        fontSize:  '14px',
-        fontWeight:  'bold',
-        color:  '#FFFFFF'
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#FFFFFF'
       },
-    
+
     },
     subtitle: {
-      text: 'Live Movements',
+      text: 'Consumption Movements',
       align: 'left'
     },
 
     xaxis: {
-      labels:{
-        datetimeUTC:false,
+      labels: {
+        datetimeUTC: false,
         style: {
           colors: '#008FFB' //replace with your desired color
         }
       },
-      type: 'datetime'
+      type: 'datetime',
+      tooltip: {
+        enabled: true,
+        formatter: function(value) {
+          // Use this formatter function to format the tooltip value
+          const date = new Date(value);
+          return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+        }
+      },
     },
     yaxis: {
       opposite: true
+    },
+    tooltip: {
+      x: {
+        format: 'HH:mm' // You might think this is enough, but custom formatter as shown above in xaxis.tooltip is necessary for specific custom formats
+      }
     },
     legend: {
       horizontalAlign: 'left'
     }
   })
   const [costOptions, setCostOptions] = useState({
-  
+
     chart: {
       type: 'area',
       stacked: true,
-      forecolor:'#008FFB'
+      forecolor: '#008FFB'
     },
     title: {
       text: 'Total energy cost during the last hour',
       align: 'left',
       style: {
-        fontSize:  '14px',
-        fontWeight:  'bold',
-        color:  '#FFFFFF'
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: '#FFFFFF'
       },
-    
+
     },
     colors: ['#008FFB', '#00E396', '#CED4DC'],
 
@@ -264,15 +296,15 @@ export const BuildingDash = () => {
       horizontalAlign: 'left'
     },
     xaxis: {
-      labels:{
-        datetimeUTC:false,
+      labels: {
+        datetimeUTC: false,
         style: {
           colors: '#008FFB' //replace with your desired color
         }
       },
       type: 'datetime'
     },
-  
+
   })
 
   const userOptions = useSelector(state => state.userOptions)
@@ -296,126 +328,79 @@ export const BuildingDash = () => {
   }, [userOptions])
 
   useEffect(() => {
-    function modifyDash(newValuesArray) {
+    function modifyDash(newDataObj) {
 
-      let currConsMetrics = {
-        water: '0', cng: '0', power: '0'
-      }
-      let currCostMetrics = {
-        water: '0', cng: '0', power: '0'
-      }
-      console.log(newValuesArray)
-      currConsMetrics.power = newValuesArray[0]//not best practice
-      currCostMetrics.power = newValuesArray[1]
-      currConsMetrics.cng = newValuesArray[2]
-      currCostMetrics.cng = newValuesArray[3]
-      currConsMetrics.water = newValuesArray[4]
-      currCostMetrics.water = newValuesArray[5]
-      unstable_batchedUpdates(() => {
-        setPowerCons(currConsMetrics.power)
-        setCngCons(currConsMetrics.cng)
-        setWaterCons(currConsMetrics.water)
-        setPowerCost(currCostMetrics.power)
-        setCngCost(currCostMetrics.cng)
-        setWaterCost(currCostMetrics.water)
+      // Extracting water values
+      const waterValue = newDataObj['water_value']; // Assuming 'water_value' is the correct key
+      const waterPriceValue = newDataObj['water_price_value'];
+      const wattValue = newDataObj['watt_value']; 
+      const wattPriceValue = newDataObj['wattt_price_value']
+      const cngValue = newDataObj['cng_value']; 
+      const cngPriceValue = newDataObj['cng_price_value']
+
+      setWaterConsCurr(waterValue);
+      setWaterCostCurr(waterPriceValue);
+      setPowerConsCurr(wattValue);
+      setPowerCostCurr(wattPriceValue);
+      setCngConsCurr(cngValue);
+      setCngCostCurr(cngPriceValue);
+      // Now, update liveMetrics for the chart
+      const timestamp = new Date().getTime();
+      const newWaterConsMetric = [timestamp, parseFloat(waterValue)];
+      const newPowerConsMetric = [timestamp, parseFloat(wattValue)];
+      const newCngConsMetric = [timestamp, parseFloat(cngValue)];
+
+
+      setLiveWaterMetrics(prevMetrics => {
+        const newWaterConsMetricArray = [...prevMetrics[0].data, newWaterConsMetric];
+  
+        // If length exceeds 20, remove the oldest entry
+        if (newWaterConsMetricArray.length > 20) {
+          newWaterConsMetricArray.shift();
+        }
+        // Return new metrics array with updated data
+        return [{ ...prevMetrics[0], data: newWaterConsMetricArray  }];
+
+      })
+      setLivePowerMetrics(prevMetrics => {
+        const newPowerConsMetricArray = [...prevMetrics[0].data, newPowerConsMetric];
+  
+        // If length exceeds 20, remove the oldest entry
+        if (newPowerConsMetricArray.length > 20) {
+          newPowerConsMetricArray.shift();
+        }
+        // Return new metrics array with updated data
+        return [{ ...prevMetrics[0], data: newPowerConsMetricArray  }];
+
+      })
+      setLiveCngMetrics(prevMetrics => {
+        const newCngConsMetricArray = [...prevMetrics[0].data, newCngConsMetric];
+  
+        // If length exceeds 20, remove the oldest entry
+        if (newCngConsMetricArray.length > 20) {
+          newCngConsMetricArray.shift();
+        }
+        // Return new metrics array with updated data
+        return [{ ...prevMetrics[0], data: newCngConsMetricArray  }];
+
       })
     }
 
-    if (Object.keys(subscription).length !== 0)//so it will not run on init 
+    if (Object.keys(buildingMetrics).length !== 0)//so it will not run on init 
     {
-console.log(subscription)
-      //modifyDash(subscription)
+      console.log(buildingMetrics)
+      modifyDash(buildingMetrics[0])
     }
-  }, [subscription])
+  }, [buildingMetrics])
 
 
-  useEffect(() => {
 
-    let waterMetric = []
-    let updWaterArray = [...liveWaterMetrics[0].data]
-    const time = new Date()
-    waterMetric.push(new Date(time).getTime())
-    waterMetric.push(waterCons)
-    if (updWaterArray.length > 20) {//if it holds values bigger than 20
-      updWaterArray.shift()
-    }
-    updWaterArray.push(waterMetric)//later we will load prev metric values from old array 
 
-    let tempWaterArray = produce(liveWaterMetrics, draftState => {
-      draftState[0].data = updWaterArray
-    })
-    setLiveWaterMetrics(tempWaterArray)
+useEffect(() => {
+  console.log(liveWaterMetrics)
 
-  }, [waterCons])
-  useEffect(() => {
-
-    let powerMetric = []
-    let updPowerArray = [...livePowerMetrics[0].data]
-    console.log("Updated power array" + updPowerArray)
-    const time = new Date()
-    powerMetric.push(new Date(time).getTime())
-    powerMetric.push(powerCons)
-    if (updPowerArray.length > 20) {//if it holds values bigger than 20
-      updPowerArray.shift()
-    }
-    updPowerArray.push(powerMetric)//later we will load prev metric values from old array 
-
-    let tempPowerArray = produce(livePowerMetrics, draftState => {
-      draftState[0].data = updPowerArray
-    })
-    setLivePowerMetrics(tempPowerArray)
-
-  }, [powerCons])
-  useEffect(() => {
-
-    let cngMetric = []
-    let updCngArray = [...liveCngMetrics[0].data]
-    const time = new Date()
-    cngMetric.push(new Date(time).getTime())
-    cngMetric.push(cngCons)
-    if (updCngArray.length > 20) {//if it holds values bigger than 20
-      updCngArray.shift()
-    }
-    updCngArray.push(cngMetric)//later we will load prev metric values from old array 
-
-    let tempCngArray = produce(liveCngMetrics, draftState => {
-      draftState[0].data = updCngArray
-    })
-    setLiveCngMetrics(tempCngArray)
-
-  }, [cngCons])
-  useEffect(() => {
-
-    let waterCostMetric = []
-    let powerCostMetric = []
-    let cngCostMetric = []
-    let updWaterCostArray = [...liveCostMetrics[0].data]
-    let updPowerCostArray = [...liveCostMetrics[1].data]
-    let updCngCostArray = [...liveCostMetrics[2].data]
-    const time = new Date()
-    waterCostMetric.push(new Date(time).getTime())
-    waterCostMetric.push(waterCost)
-    powerCostMetric.push(new Date(time).getTime())
-    powerCostMetric.push(powerCost)
-    cngCostMetric.push(new Date(time).getTime())
-    cngCostMetric.push(cngCost)
-    if (updWaterCostArray.length > 20) {//if this array (we just chose 1 of 3) holds values bigger than 20
-      updWaterCostArray.shift()
-      updPowerCostArray.shift()
-      updCngCostArray.shift()
-    }
-    updWaterCostArray.push(waterCostMetric)//later we will load prev metric values from old array 
-    updPowerCostArray.push(powerCostMetric)
-    updCngCostArray.push(cngCostMetric)
-
-    let tempCostArray = produce(liveCostMetrics, draftState => {
-      draftState[0].data = updWaterCostArray
-      draftState[1].data = updPowerCostArray
-      draftState[2].data = updCngCostArray
-    })
-    setLiveCostMetrics(tempCostArray)
-
-  }, [waterCost])
+  
+}, [liveWaterMetrics])
 
   useEffect(() => {
     if (liveCostMetrics[0].data.length > 0)//check if any vale has been fetched (we chose water value to do the check randomly)
@@ -446,13 +431,13 @@ console.log(subscription)
     <div id="wrapper">
       <div className="content-area">
         <div className="container-fluid">
-         
+
           <div className="row">
             <div className="col-md-6">
               <div className="panel mt-md-2">
                 <div id="sumCostChart">
-                  
-                  <ReactApexCharts options={sumCostDonut} series={costSum} type="donut"/>
+
+                  <ReactApexCharts options={sumCostDonut} series={costSum} type="donut" />
                 </div>
               </div>
             </div>

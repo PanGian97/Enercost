@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Amplify, PubSub } from 'aws-amplify'
-import { Auth } from 'aws-amplify'
 import { useDispatch, useSelector } from "react-redux";
-import { loadSelectedBuildingId } from "../actions/userOptions"
 import ReactApexCharts from 'react-apexcharts'
-import produce from "immer"
-import { buildingTSData, cleanProfileStateArray, updateChartData } from '../actions/buildingTSData';
+import { buildingTSData,} from '../actions/buildingTSData';
 import { mqttSubscription, mqttUnsubscribe } from '../actions/subscription';
 import './styles/BuildingCharts.css'
-import moment from 'moment'
 export const BuildingCharts = () => {
 
   const [dataPeriod, setDataPeriod] = useState('day')
@@ -135,8 +130,9 @@ export const BuildingCharts = () => {
         case 'minute':
           dispatch(buildingTSData(idJwtToken, userOptions.defaultBuildingId, 'minute'))
           dispatch(mqttSubscription(userOptions.defaultBuildingId))
-        default:
           break;
+        default:
+
       }
     }
   }, [dataPeriod])
